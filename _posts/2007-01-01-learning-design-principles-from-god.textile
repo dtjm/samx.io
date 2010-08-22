@@ -1,0 +1,15 @@
+---
+layout: post
+title: Learning Design Principles from God
+---
+
+I have lately been growing an interest in design, namely _software design_ and _human-computer interface design_. At the same time, I have been dreaming up my own software development firm. As I asked myself, _what would set my firm apart?_, I began to wonder, _how would God design software?_.
+
+I really don't have any answers right now, but I'm thinking that I would have to look at the hard sciences: physics, chemistry, and biology since those disciplines are continually unraveling God's creative genius. Biology may be of special interest because it seems to rest at the same level of software that I am interested in. Physics would be like hardware, chemistry could be the operating system, but biology could be user-level software.
+
+Here are some things that I am currently digging into to learn more about design:
+<ul>
+	<li><a href="http://en.wikipedia.org/wiki/Design_Patterns">Design Patterns</a>, The Gang of Four - the definitive reference on time-tested patterns of software design</li>
+	<li><a href="http://humanized.com">Humanized.com</a> - four really smart guys writing on make computers more usable and _humane_</li>
+
+</ul>

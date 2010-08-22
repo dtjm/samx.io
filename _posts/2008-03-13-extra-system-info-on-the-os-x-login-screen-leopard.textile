@@ -1,0 +1,6 @@
+---
+layout: post
+title: Extra System Info on the OS X Login Screen (Leopard)
+---
+
+Here's a cool trick I just found by accident: <img src="http://techglobber.files.wordpress.com/2008/03/picture-1.png" border="2" alt="OS X Login Screen" /> See under "Mac OS X" where it says the name of your computer on the login screen? If you click on it you can get info about your IP address, whether you can log into network logins, and other cool info. What will they think of next... 

@@ -1,0 +1,7 @@
+---
+layout: post
+title: How to Capture Web Pages into Aviary in Safari
+---
+
+<a href="http://aviary.com/launch/falcon"><img alt="" src="http://web1.aviary.com/images_orig/blog/talon/Falcon.png" title="Aviary Falcon" class="alignright" width="200" /></a>Go to <a href="http://aviary.com/launch/talon">Talon</a> and grab the bookmarklet in the upper-right corner of the page.
+

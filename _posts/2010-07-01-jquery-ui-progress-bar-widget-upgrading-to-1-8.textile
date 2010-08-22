@@ -1,0 +1,8 @@
+---
+layout: post
+title: jQuery UI Progress Bar Widget - upgrading to 1.8
+---
+
+If you are upgrading your jQuery UI build from 1.7 to 1.8 and you are using the Progress Bar widget, AND your progress bars break after the upgrade, make sure you are passing Number values, not String values to the "value" option of the Progress Bar plugin.
+[caption id="attachment_125" align="alignleft" width="113" caption="BROKEN IN 1.8: Passing String value to Progress Bar"]<a href="http://techglobber.files.wordpress.com/2010/07/screen-shot-2010-07-01-at-4-33-57-pm.png"><img src="http://techglobber.files.wordpress.com/2010/07/screen-shot-2010-07-01-at-4-33-57-pm.png" alt="" title="Screen shot 2010-07-01 at 4.33.57 PM" width="113" height="25" class="size-full wp-image-125" /></a>[/caption] [caption id="attachment_124" align="alignleft" width="109" caption="WORKS in 1.8: Passing Number values"]<a href="http://techglobber.files.wordpress.com/2010/07/screen-shot-2010-07-01-at-4-33-34-pm.png"><img src="http://techglobber.files.wordpress.com/2010/07/screen-shot-2010-07-01-at-4-33-34-pm.png" alt="" title="Screen shot 2010-07-01 at 4.33.34 PM" width="109" height="25" class="size-full wp-image-124" /></a>[/caption]
+

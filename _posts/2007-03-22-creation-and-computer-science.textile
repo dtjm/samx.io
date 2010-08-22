@@ -1,0 +1,10 @@
+---
+layout: post
+title: Creation and Computer Science
+---
+
+<img src="http://tech.fileglobber.net/wp-content/uploads/2007/03/tt_neilgershenfeld.png" alt="Neil Gershenfeld">TED is an elite annual conference that brings together the smartest people in the world to gather ideas on how to make the world a better place. I made it sound cheesier than it really is.
+
+I just listened to Neil Gershenfeld from MIT talk about fabrication, design, and all sorts of amazing applications. The coolest thing, though, was when he talked about nano-computers that stored information in them similar to how DNA stores information internally. It's fascinating to see man-made things move closer to things God has already designed.
+
+<a href="http://www.ted.com/tedtalks/tedtalksplayer.cfm?key=n_gershenfeld">Neil Gershenfeld on TED Talks</a>

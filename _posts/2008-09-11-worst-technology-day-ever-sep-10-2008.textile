@@ -1,0 +1,79 @@
+---
+layout: post
+title: "Worst Technology Day Ever : Sep 10, 2008"
+---
+
+[Edit: The Thumbs.db problem is a <a href="http://techglobber.wordpress.com/2008/09/13/thumbsdb-windows-xp-and-leopard-server/">separate issue with a separate solution</a> -- SXN, 9/13/08]
+
+<div><img class="alignright" title="Server Admin" src="http://images.apple.com/server/macosx/features/images/admin_icon20071009.png" alt="" width="100" height="103" />So today was pretty much the worst day ever in the history of setting up a mixed Windows and Mac environment. 
+<div>At work we have an Xserve (Early 2008) running Leopard Server 10.5.4, serving Windows and Mac clients.  The one particular user having problems runs Windows XP SP3 on Boot Camp 2.1 on a late 2007 iMac.</div>
+
+
+
+<div><hr /></div>
+h3. Problem 0:  Booting into Windows XP in Boot Camp
+
+
+<div>Okay so I came out of the shower this morning and Tivs tells me someone called from the office.  On the voicemail: "How do I boot back into Windows?"  Whoops.  I had set the startup disk of the iMac to the Mac partition and he couldn't get out.  </div>
+h3. Solution 0
+
+
+<div>Easy enough.  Just reboot and hold Alt/Option when you hear the Mac startup sound until you see the startup disks show.  Then select the Windows partition.  </div>
+<div>This foreshadowed the problems to come later in the day.</div>
+
+
+
+
+<div><hr /></div>
+h3. Problem 1: Losing network connection
+
+
+<div>I ride into the office a little early and within the first hour, the iMac had lost the network connection and thus lost connection to shared drives, causing file corruption on files that were being saved to the server.  Other symptoms include getting "Delayed write failed" messages from the Windows XP client.  Client machine couldn't ping any other hosts on the network, but could ping itself on localhost and local network IP interfaces (192.168.x.x)</div>
+h3. Solution 1:  Workaround by restarting
+
+
+<div>I've been able to temporarily fix the issue by restarting the machine, but this is not a good long term fix.</div>
+
+
+
+
+<div><hr /></div>
+h3. Problem 2: User can save but not delete file on Samba share
+
+
+<div>We have several different sharepoints served through Samba, managed through Server Admin.  User had difficulty with one of the sharepoints.  He was able to save a file to the share, but thereafter was unable to delete or otherwise modify the file.  Upon further investigation (using `gpresult` to get the domain info on the user), I found that the user is missing some groups of which he is a member.  The first thing I did was try to change permissions on the sharepoint to give permissions to one of the groups that did show up in gpresult.  No dice.  Second thing was to delete the user from Open Directory and re-add him.  Nothing.  </div>
+h3. Solution 2: "acl check permissions = no"
+
+
+<div>Finally, I found <a id="tbwp" title="a thread on AFP548 which had the solution" href="http://www.afp548.com/forum/viewtopic.php?showtopic=18822">a thread on AFP548 which had the solution</a>.  Apparently the Samba implementation in Leopard Server is screwed up, so I had to add "acl check permissions = no" to the [global] section of /private/etc/smb.conf.</div>
+
+
+
+
+<div><hr /></div>
+h3. Problem 3: User profile not saving Thumbs.db and Quickbooks 2006 QBW files
+
+
+<div>Okay, so I'm stoked that I got the sharepoint going.  But I tell the user to work off of his desktop so that I can properly test the sharepoint later on.  Desktop is safe.  I soon prove this assumption wrong.  The user scans an image and saves to a folder on his desktop, then copies a few Quickbooks files to his desktop and opens them up to work on them.  He finishes that, then realizes he needs to install Quicken 2008.  Everything's going smooth so far until the Quicken Installer requests a system restart.  Two files fail to copy over to the roaming profile share on the server:  the 2 Quickbooks QBW files that he had opened and closed.</div>
+<div>Fine, I think.  Just log back in, and the files will still be on the local profile.  Wrong!  They were deleted!  WTF?!  Now the user can't log into his profile due to the fact that the user can't copy all the files back from the profile on the server.  So a couple hours later, here's what I found:  ></div>
+<ol>
+	<li>If you open and close a Quickbooks file, the file will become read-only in Windows. </li>
+	<li>If a user owns a folder on the Server, he cannot copy a read-only file into that folder even if he is the owner and has POSIX permissions 700</li>
+	<li>Also, if a user has those permissions on a Quickbooks file on the server, the file will not open properly in Quickbooks.</li>
+</ol>
+<div>I tested this by opening and closing a Quickbooks file, then checking the file properties.  It was read-only.  Then I tried dragging and dropping that QBW file into the user's Desktop folder (\\xserve\profiles\user\Desktop).  The progress meter goes all the way across, then I get an error.  If I uncheck the read-only checkbox, the copy succeeds. </div>
+h3. Solution 3: Full-Control Access Control Entry (ACE)
+
+
+<div>So what eventually worked was giving the user a Full-Control ACE, and propogating it down to all child folders and files.  This allowed read-only files to be properly copied back to the user's Windows profile on the server.</div>
+
+
+
+
+<div><hr /></div>
+h3. Notes:
+
+
+<div>Another thing I did was turn off oplocks on the share that holds our Quickbooks files because <a id="z" title="I saw it on this page" href="http://edoceo.com/liber/network-samba-quickbooks">I saw it on this page</a>, and apparently they <a id="pb" title="shouldn't be used for shares which are available by AFP and SMB." href="http://docs.info.apple.com/article.html?path=ServerAdmin/10.5/en/c4fs2.html">shouldn't be used for shares which are available by AFP and SMB.</a></div>
+<div>I had to write this out for my own catharsis.  If this helps anyone else, the day was not spent in vain!</div>
+</div>

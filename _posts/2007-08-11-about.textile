@@ -1,0 +1,8 @@
+---
+layout: post
+title: About TechGlobber
+---
+
+Jotting down notes on solutions I couldn't find on Google.  Also trying to write on a biblical perspective of technology...fairly unsuccessful so far.
+
+You can also read my blog at <a href="http://dtjm.tumblr.com">dtjm.tumblr.com</a>

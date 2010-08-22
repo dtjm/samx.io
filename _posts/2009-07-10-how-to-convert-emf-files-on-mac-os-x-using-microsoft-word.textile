@@ -1,0 +1,15 @@
+---
+layout: post
+title: How to convert EMF files on Mac OS X using Microsoft Word
+---
+
+<img alt="" src="http://rookery3.aviary.com/storagev12/1708000/1708356_cfc3_rss.jpg" title="MS Word: Save as picture..." class="alignright" width="319" height="276" />Here's a little trick for converting EMF (Enhanced Metafile) images.  You'll need Microsoft Word:
+<ol>
+	<li>Drag the image into a blank Word document</li>
+	<li>Right-click on the image</li>
+	<li>Click _Save as picture..._</li>
+</ol>
+
+That will let you save it as a PNG, PDF, JPEG, BMP, or GIF.
+
+This worked on Word 2008 for Mac and OS X 10.5.7.

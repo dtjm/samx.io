@@ -1,0 +1,8 @@
+---
+layout: post
+title: "Wordpress 2.1: Front Page Appears In Inline Uploading Box in Posting Interface"
+---
+
+After upgrading to Wordpress 2.1 on FileGlobber, I was having some weird bug in the posting interface where the front page of my site was appearing in an IFRAME where the inline uploader should have been.
+
+After digging through some PHP and HTML, I determined that <a href="http://tantannoodles.com/toolkit/photo-album/">Silas Partners' Flickr Photo-Album Plugin</a> was was incompatible with the new WordPress. They have a new version (released Jan 30 2007) ready for WP 2.1.

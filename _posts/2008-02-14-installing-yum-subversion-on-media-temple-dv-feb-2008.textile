@@ -1,0 +1,23 @@
+---
+layout: post
+title: Installing yum / subversion on Media Temple (dv), Feb 2008
+---
+
+<span style="font-style:italic;" class="Apple-style-span">Edit 3/12/2008: According to <a href="http://techglobber.wordpress.com/wp-admin/post.php#comment-46">John's comment</a>, you can do all this by installing the Developer Tools in your Media Temple Account Center. All you have to do after installing the developer tools is install the yum package itself (the last rpm command below)
+
+Edit 10/15/2008: Updated the URL for the yum RPM. Thanks Jordan.
+</span>
+
+<a href="http://kb.mediatemple.net/article.php?id=807"></a><a href="http://kb.mediatemple.net/article.php?id=807">http://kb.mediatemple.net/article.php?id=807</a>   
+
+<hr>
+
+I just signed up for Media Temple (dv) server and was trying to get subversion installed. I couldn't find any up-to-date instructions so here are some in case you need:<ol>	<li>Get root access (Submit a support ticket and ask for root access. They will send you a password. Change the password to be safe.)</li>	<li>Run these commands to install yum and its dependencies:bq. @rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/python-elementtree-1.2.6-5.i386.rpm
+rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/python-sqlite-1.1.7-1.2.1.i386.rpm
+rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/rpm-python-4.4.2-47.el5.i386.rpm
+rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/m2crypto-0.16-6.el5.1.i386.rpm
+rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/python-urlgrabber-3.1.0-2.noarch.rpm
+rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/yum-metadata-parser-1.0-8.fc6.i386.rpm
+rpm -Uvh http://mirror.centos.org/centos/5/os/i386/CentOS/yum-3.2.8-9.el5.centos.1.noarch.rpm@    </li>	<li>Finally, to install subversion:bq. @yum install subversion@   </li></ol>h3. Links
+
+<a href="http://elsid.net/2007/06/01/media-temple-dv-install-yum-and-media-temple-dv-simpler-svn-install/">media temple dv install yum and media temple dv simpler svn install | hi my name is sid</a>

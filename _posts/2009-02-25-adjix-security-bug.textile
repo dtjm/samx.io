@@ -1,0 +1,8 @@
+---
+layout: post
+title: Adjix security bug
+---
+
+Yesterday I found a pretty serious security flaw in the Adjix software.
+
+They wrote about it here: <a href="http://blog.adjix.com/2009/02/security-hole-found-fixed-and-deployed.html">http://blog.adjix.com/2009/02/security-hole-found-fixed-and-deployed.html</a>

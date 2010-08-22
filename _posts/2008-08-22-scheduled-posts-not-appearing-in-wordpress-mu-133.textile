@@ -1,0 +1,33 @@
+---
+layout: post
+title: Scheduled posts not appearing in Wordpress MU 1.3.3
+---
+
+We were having issues of scheduled posts not appearing at the scheduled time
+WordPress MU 1.3.3
+
+We tried adding this snippet in wp-includes/cron.php:
+bq. 
+<pre>fflush($argyle);
+fgets($argyle);
+fclose($argyle);</pre>
+
+
+Which was only half of the problem.
+
+What happened in our setup was that our machine that was hosting our WordPress installation could not access the site properly from the machine itself due to improper DNS settings
+
+So here's what I did:
+<ol>
+	<li>SSH into the machine which is hosting WordPress.</li>
+	<li>Attempt to access the site using `lynx http://example.com/`.
+This showed me that I couldn't get to the site from the host itself, and therefore couldn't execute the wp-cron.php script.</li>
+	<li>At this point I looked at the Apache configuration and realized that the virtual host for our WordPress installation was only listening on the public IP interface, not the localhost.
+The /etc/hosts was pointing example.com to the localhost interface, which made me see the default Apache web site when I tried to access http://example.com</li>
+	<li>So I had to change /etc/hosts to make sure that example.com would resolve to the public IP interface.</li>
+</ol>
+The end!
+<div>References</div>
+<ul>
+	<li><a href="http://trac.wordpress.org/ticket/3742">http://trac.wordpress.org/ticket/3742</a></li>
+</ul>

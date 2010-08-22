@@ -1,0 +1,8 @@
+---
+layout: post
+title: Snow Leopard iChat appears to work through firewalls (maybe)
+---
+
+Ok, Snow Leopard's #1 best feature: it appears that iChat now works through firewalls!  Or so it seems between a DMZ subnet and an internal subnet on our physical network...
+
+[caption id="attachment_116" align="aligncenter" width="600" caption="iChat group photo"]<img src="http://techglobber.files.wordpress.com/2009/08/screen-shot-2009-08-28-at-6-01-15-pm1.png" alt="iChat group photo" title="Screen shot 2009-08-28 at 6.01.15 PM" width="600" height="344" class="size-full wp-image-116" />[/caption] 

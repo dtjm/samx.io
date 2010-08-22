@@ -1,0 +1,25 @@
+---
+layout: post
+title: "“ImportError: No module named rhn” when upgrading from RHEL3 to RHEL4"
+---
+
+I was getting this error when trying to run *up2date *after upgrading Red Hat Enterprise Linux from v3 to v4:
+@> up2date-nox
+Traceback (most recent call last):
+  File "/usr/sbin/up2date-nox", line 27, in ?
+    from up2date_client import repoDirector
+  File "/usr/share/rhn/up2date_client/repoDirector.py", line 5, in ?
+    import rhnChannel
+  File "/usr/share/rhn/up2date_client/rhnChannel.py", line 10, in ?
+    import up2dateAuth
+  File "/usr/share/rhn/up2date_client/up2dateAuth.py", line 5, in ?
+    import rpcServer
+  File "/usr/share/rhn/up2date_client/rpcServer.py", line 23, in ?
+    from rhn import rpclib
+ImportError: No module named rhn@
+The solution was to reinstall *rhnlib-1.8.2-1.p23.1.noarch.rpm* and  *up2date-4.4.67-4.i386.rpm*. Be sure to install those exact versions, since what RHEL4 installs is newer and broken for some reason. Then, when you run _up2date -u_, up2date will upgrade itself properly. You can get the RPMs through the RHN web interface.
+
+*References*
+<ol>
+	<li><a href="http://www.archivesat.com/gtkmm_general_discussion/thread518707.htm">http://www.archivesat.com/</a></li>
+</ol>
