@@ -1,6 +1,0 @@
----
-layout: post
-title: TechCrunch forces Picasa leak out of Google employee at MacWorld
----
-
-<img src="http://tbn0.google.com/images?q=tbn:QTyDyHnQE76pmM:http://www.topdownloads360.com/images/picasa_logo.gif" border="1" width="95" height="94" align="right" />Michael Arrington of TechCrunch forces an unsuspecting Google rep at MacWorld to leak word of Picasa currently in development for OS X.Finally! I have been waiting for Picasa to come to the Mac. I am tired of iPhoto (except for the printed books feature, that is pretty cool).  <a href="http://www.techcrunch.com/2008/01/15/exclusive-google-developing-mac-version-of-picasa-due-to-be-released-this-year/">Google Developing Mac Version Of Picasa, Due To Be Released This Year</a> (TechCrunch)

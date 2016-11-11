@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.17" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+  <title>Sam X.</title>
+  
+
+  
+  <link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/css/poole.css">
+  <link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/css/syntax.css">
+  <link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/index.xml" rel="alternate" type="application/rss+xml" title="Sam X." />
+</head>
+
+<body class="theme-base-0d ">
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/"><h1>Sam X.</h1></a>
+      <p class="lead">
+       Backend engineer at SendGrid writes about Go programming and more. 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+        <li><a href="/u/222781/dtjm.github.io/public/post/designing-go-libraries/"> Designing libraries in Go </a></li>
+      
+    </ul>
+
+    <p>&copy; 2016. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="posts">
+
+      
+  <div class="post">
+    <h1 class="post-title">
+      <a href="https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/post/designing-go-libraries/">
+        Designing libraries in Go
+      </a>
+    </h1>
+
+    <span class="post-date">Sun, Nov 6, 2016</span>
+
+    
+
+<p>I am by far an expert in Go, but in the past few years I&rsquo;ve collected some ideas
+of what makes a Go library easy to use. Here are a few humble suggestions I have
+for you, the Go library designer, which can bring joy and delight to your users.</p>
+
+<h2 id="minimize-interfaces-you-accept">Minimize interfaces you accept</h2>
+
+<p>Sometimes you want to define the interface of something that gets passed into
+your library, for example a logger.</p>
+
+<p>So you think to yourself, &ldquo;I&rsquo;m such a nice guy, I&rsquo;m going to let my user&rdquo; pass
+in any logger of their choosing:</p>
+
+<pre><code>type Logger interface {
+	Fatal(args ...interface{})
+	Fatalf(format string, args ...interface{})
+	Fatalln(args ...interface{})
+	Print(args ...interface{})
+	Printf(format string, args ...interface{})
+	Println(args ...interface{})
+}
+</code></pre>
+
+<p>Great! But, at the same time, not so great. You&rsquo;ve destined your user to either use
+the standard library [log] package, or write an adapter which has 6 methods.</p>
+
+<p>There is a better way. First of all, notice that some of these methods can be
+expressed in terms of the others. In other words, why write <code>Println</code> when you
+already have <code>Printf</code>? One is expressable in terms of the other.</p>
+
+<pre><code>func Println(s string) {
+	Printf(&quot;%s\n&quot;, s)
+}
+</code></pre>
+
+<p>This gives us the opportunity to minimize the interface we require:</p>
+
+<pre><code>type Logger interface {
+	Fatalf(format string, args ...interface{})
+	Printf(format string, args ...interface{})
+}
+</code></pre>
+
+<p>That&rsquo;s a little better, right?</p>
+
+<p>Don&rsquo;t do <a href="https://github.com/Shopify/sarama/blob/482c471fbf73dc2ac66945187f811581f008c24a/sarama.go#L61-L65">this</a>, <a href="https://github.com/Shopify/sarama/blob/master/mockresponses.go#L9-L14">that</a>, or especially not <a href="https://github.com/grpc/grpc-go/blob/master/grpclog/logger.go#L50-L57">this</a></p>
+
+<h2 id="2a-take-a-logger-as-a-function">2a. Take a logger as a function</h2>
+
+<p>If you can reduce your</p>
+
+<h2 id="1-expose-interfaces-not-structs">1. Expose interfaces, not structs</h2>
+
+<h2 id="3-don-t-put-state-in-the-package">3. Don&rsquo;t put state in the package</h2>
+
+<h2 id="4-embed-your-dependencies">4. Embed your dependencies</h2>
+
+<pre><code class="language-golang">// here is some code
+</code></pre>
+
+  </div>
+  
+</div>
+</div>
+
+  </body>
+</html>

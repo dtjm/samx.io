@@ -1,0 +1,8 @@
+baseurl = "https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/"
+languageCode = "en-us"
+theme = "hyde"
+title = "Sam X."
+
+[params]
+description = "Backend engineer at SendGrid writes about Go programming and more."
+themeColor = "theme-base-0d"

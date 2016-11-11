@@ -1,9 +1,0 @@
----
-layout: post
-title: "Link: fantastic site on technology & humanity"
----
-
-I came across an excellent blog this weekend on the influence of technology on humanity.  It's exactly what I was looking for, but had a lot of trouble finding.  Most of faith + technology stuff I had seen before was about how to use technology in ministry.  This site seems to tackle the question of how technology affects life as a whole, but from a biblical worldview.
-
-h1. <a href="http://donteatthefruit.com">Don't Eat The Fruit</a>
-
