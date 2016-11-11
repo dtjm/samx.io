@@ -2,12 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/</loc>
+    <loc>https://dtjm.github.io/</loc>
     <lastmod>2016-11-06T21:51:21-08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dl.dropboxusercontent.com/u/222781/dtjm.github.io/public/post/designing-go-libraries/</loc>
+    <loc>https://dtjm.github.io/post/designing-go-libraries/</loc>
     <lastmod>2016-11-06T21:51:21-08:00</lastmod>
   </url>
   

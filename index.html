@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.17" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+  <title>Sam X.</title>
+  
+
+  
+  <link rel="stylesheet" href="https://dtjm.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://dtjm.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://dtjm.github.io/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="https://dtjm.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Sam X." />
+</head>
+
+<body class="theme-base-0d ">
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dtjm.github.io/"><h1>Sam X.</h1></a>
+      <p class="lead">
+       Software engineer at SendGrid writes about Go programming and more. 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+        <li><a href="/post/designing-go-libraries/"> Designing libraries in Go </a></li>
+      
+    </ul>
+
+    <p>&copy; 2016. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="posts">
+
+      
+  <div class="post">
+    <h1 class="post-title">
+      <a href="https://dtjm.github.io/post/designing-go-libraries/">
+        Designing libraries in Go
+      </a>
+    </h1>
+
+    <span class="post-date">Sun, Nov 6, 2016</span>
+
+    
+
+<p>I am not a Go expert, but in the past few years I&rsquo;ve collected some ideas of
+what makes a Go library easy to use. Here are a few humble suggestions I have
+for you, the aspiring Go library designer, which you can use to bring joy and
+delight to your users.</p>
+
+<h2 id="minimize-interface-surface-area">Minimize interface surface area</h2>
+
+<p>Sometimes you want to abstract away the implementation of a component in your
+library, for example a logger.</p>
+
+<p>So you think to yourself, &ldquo;I&rsquo;m such a nice person, I&rsquo;m going to let my user pass
+in any logger of their choosing&rdquo;.  Let them give me any <code>Logger</code> they want:</p>
+
+<pre><code>type Logger interface {
+	Print(v ...interface{})
+	Printf(format string, args ...interface{})
+	Println(v ...interface{})
+}
+</code></pre>
+
+<p>Stop right there. What you&rsquo;re doing there is <strong>lazy</strong>. You&rsquo;ve destined your user
+to do one of two things: 1) use the standard library
+<a href="https://golang.org/pkg/log/">log</a> package, or 2) write an adapter which has 3
+methods. That is not something a nice person would do.</p>
+
+<p>There is a better way. The astute reader may notice that some of these methods
+can be expressed in terms of the others. In other words, why write <code>Println</code>
+when you already have <code>Printf</code>? One can be expressed in terms of the other.</p>
+
+<pre><code>func Println(s string) {
+	Printf(&quot;%s\n&quot;, s)
+}
+</code></pre>
+
+<p>This gives us the opportunity to minimize the interface we require. Let&rsquo;s try
+this:</p>
+
+<pre><code>type Logger interface {
+	Printf(format string, args ...interface{})
+}
+</code></pre>
+
+<p>That&rsquo;s a little better, right?</p>
+
+<p>I think we can take this another step further&hellip;</p>
+
+<h3 id="what-s-more-abstract-than-an-interface">What&rsquo;s more abstract than an interface?</h3>
+
+<p>Let&rsquo;s say we wanted to plug in the
+<a href="https://golang.org/pkg/testing/#T.Logf">(*testing.T).Logf</a> method into the
+<code>Logger</code> interface. We might do something like this:</p>
+
+<pre><code>type testLogger struct {
+	*testing.T
+}
+
+func (t *testLogger) Printf(format string, v ...interface{}) {
+	t.T.Logf(format, v...)
+}
+</code></pre>
+
+<p>Not too shabby, right?  I think we can do this in a way that requires the user
+to write even less code.</p>
+
+<p>What&rsquo;s more abstract than an interface? How about a function?</p>
+
+<pre><code>type Logger func (format string, v ...interface{})
+</code></pre>
+
+<p>Exposing this behavior as a function instead of an interface makes it even more
+compatible with existing code. With interfaces, you have to match the method
+name, but with functions you only have to match the function signature, i.e. the
+parameter and return types.</p>
+
+<p>This, combined with Go&rsquo;s concept of <a href="https://golang.org/doc/go1.1#method_values">method
+values</a> gives us the ability to use
+different loggers easily:</p>
+
+<pre><code>type Logger func (format string, v ...interface{})
+
+var log Logger
+var t *testing.T
+
+// All of these loggers can be used
+log = log.Printf
+log = t.Logf
+log = logrus.Debugf
+log = glog.Infof
+log = seelog.Debugf
+
+log(&quot;I got an error: %s&quot;, err)
+</code></pre>
+
+<p>Now you might say &ldquo;but I need 3 logging levels in my library&rdquo;. I&rsquo;m going to
+state my uneducated opinion here and say <strong>no you don&rsquo;t</strong>. If your user is
+having to enable logging in <strong>your</strong> library, they are mostly likely trying to
+debug it. Hence, they probably only need a <code>DEBUG</code> level.</p>
+
+<p>In the Go standard library there are many examples of where interfaces are
+accepted, but the function/callback approach is also used in several places:</p>
+
+<ul>
+<li><a href="https://blog.tylerchr.com/golang-18-whats-coming/#new-slice-sorting-api">New sort.Slice function in Go
+1.8</a></li>
+<li><a href="https://golang.org/pkg/net/http/httptrace/#ClientTrace">httptrace.ClientTrace</a></li>
+</ul>
+
+<h2 id="expose-interfaces-not-structs-keep-it-primitive">Expose interfaces, not structs / Keep it primitive</h2>
+
+<p>The more of your library&rsquo;s surface area is tightly coupled to your library, the
+more trouble your users will have if they want to make it cooperate with the other libraries in their toolbox.</p>
+
+<p>As a rule of thumb, your library should prefer to pass data to and from your
+user in terms of primitive data types, if it makes sense.</p>
+
+<p>If it doesn&rsquo;t make sense to do so, you may be tempted to create a struct to
+organize the data that goes between your code and your user&rsquo;s code.</p>
+
+<h2 id="don-t-put-state-in-the-package">Don&rsquo;t put state in the package</h2>
+
+<p>In general, maintaining state is <strong>evil</strong>. Global state is the worst kind of
+state, and package-level state is a form of global state. If you must have
+state, keep it contained to as short a time period as possible.</p>
+
+<p><em>How do I know if I have global state in my library?</em></p>
+
+<p>If you have a <code>var</code> declaration in the <a href="https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27">top
+level</a>
+of your package (i.e. outside of a function or method definition), then you have
+global state. This state is shared among all the code defined in
+your library.</p>
+
+<p>Having package-level state prevents your user from doing cool things like:</p>
+
+<ol>
+<li>Reasoning about your library code (that is in the expected state at any given
+time)</li>
+<li>Parallelizing tests</li>
+</ol>
+
+<p>Sometimes you want to have a package level instance in your library, to make it
+more convenient for your users (i.e. so they can use your library out of the
+box, without any instantiation.) If you decide to take this route, please, for
+the love of Gophers, also provide a way to instantiate a single instance. Some
+good examples of this are the <a href="https://golang.org/pkg/log/">log</a> and
+<a href="https://golang.org/pkg/flag/">flag</a> packages from the standard library.</p>
+
+<h3 id="don-t-reach-past-the-user-s-code">Don&rsquo;t reach past the user&rsquo;s code</h3>
+
+<p>A rule of thumb that is corollary to this: don&rsquo;t do anything that reaches past
+your user&rsquo;s code. What I mean by this is that you shouldn&rsquo;t do any of these
+types of things unless that&rsquo;s the explicit core purpose of your library:</p>
+
+<ul>
+<li>Read/write from disk</li>
+<li>Parse configuration from the environment</li>
+<li>Open network connections</li>
+</ul>
+
+<h2 id="embed-your-dependencies">Embed your dependencies</h2>
+
+<p>There&rsquo;s nothing more annoying in Go than <strong>package management</strong>.  Don&rsquo;t make your
+users do extra and unnecessary package management.  Your library should come as a
+single unit wrapped in a nice, neat bow.</p>
+
+<p>Copy-pasting your dependencies directly into your package adds a little more
+work to your plate, but makes working with your library slightly more
+delightful.  You could save a poor Go newbie from dependency hell.</p>
+
+<h2 id="acknowledgments">Acknowledgments</h2>
+
+<p>Credit goes to these libraries for inspiring me:</p>
+
+<ul>
+<li><a href="https://github.com/Shopify/sarama/blob/482c471fbf73dc2ac66945187f811581f008c24a/sarama.go#L61-L65">Shopify/sarama</a></li>
+<li><a href="https://github.com/grpc/grpc-go/blob/e59af7a0a8bf571556b40c3f871dbc4298f77693/grpclog/logger.go#L50-L57">google.golang.org/grpc</a></li>
+<li><a href="https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27">afex/hystrix-go</a></li>
+</ul>
+
+  </div>
+  
+</div>
+</div>
+
+  </body>
+</html>
