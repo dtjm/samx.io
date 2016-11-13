@@ -25,9 +25,9 @@ organize the data that goes between your code and your user's code.
 
 ## Avoid package-level state
 
-In general, maintaining state is **evil**. Global state is the worst kind of
-state, and package-level state is a form of global state. If you must have
-state, keep it contained to as short a time period as possible.
+In general, maintaining state is a necessary **evil**. Global state is the worst
+kind of state, and package-level state is a form of global state. If you must
+have state, keep it contained to as short a time period as possible.
 
 *How do I know if I have global state in my library?*
 
