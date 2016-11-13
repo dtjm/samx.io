@@ -3,6 +3,8 @@ languageCode = "en-us"
 theme = "hyde"
 title = "Sam X."
 publishdir = "."
+PygmentsCodeFences = true
+PygmentsStyle = "monokai"
 
 [params]
 description = "Software engineer at SendGrid writes about Go programming and more."
