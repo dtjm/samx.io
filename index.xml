@@ -104,8 +104,9 @@ and got a competing offer.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;P.S. I now work at SendGrid in Orange, CA on a small team building distributed
 systems. We’re looking for a few good engineers.&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;P.P.S. For more info on the Briefcase Technique, check out Ramit’s site. Then,
-come practice it on us at SendGrid!&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;P.P.S. For more info on the Briefcase Technique, &lt;a href=&#34;http://www.iwillteachyoutoberich.com/the-briefcase-technique/&#34;&gt;check out Ramit’s
+site&lt;/a&gt;. Then, come
+practice it on us at SendGrid!&lt;/em&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -117,22 +118,8 @@ come practice it on us at SendGrid!&lt;/em&gt;&lt;/p&gt;
       <guid>https://dtjm.github.io/post/designing-go-libraries/</guid>
       <description>
 
-&lt;p&gt;I am not a Go expert, but in the past few years I&amp;rsquo;ve collected some ideas of
-what makes a Go library easy to use. Here are a few humble suggestions I have
-for you, the aspiring Go library designer, which you can use to bring joy and
-delight to your users.&lt;/p&gt;
-
-&lt;h2 id=&#34;keep-it-primitive&#34;&gt;Keep it primitive&lt;/h2&gt;
-
-&lt;p&gt;The more of your library&amp;rsquo;s surface area is tightly coupled to your library, the
-more trouble your users will have if they want to make it cooperate with the
-other libraries in their toolbox.&lt;/p&gt;
-
-&lt;p&gt;As a rule of thumb, your library should prefer to pass data to and from your
-user in terms of primitive data types, if it makes sense.&lt;/p&gt;
-
-&lt;p&gt;If it doesn&amp;rsquo;t make sense to do so, you may be tempted to create a struct to
-organize the data that goes between your code and your user&amp;rsquo;s code.&lt;/p&gt;
+&lt;p&gt;I am not a Go expert, but over the past few years I&amp;rsquo;ve collected some ideas of
+what makes a Go library easy to use.&lt;/p&gt;
 
 &lt;h2 id=&#34;avoid-package-level-state&#34;&gt;Avoid package-level state&lt;/h2&gt;
 
@@ -140,13 +127,12 @@ organize the data that goes between your code and your user&amp;rsquo;s code.&lt
 kind of state, and package-level state is a form of global state. If you must
 have state, keep it contained to as short a time period as possible.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;How do I know if I have global state in my library?&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;how-do-i-know-if-i-have-package-level-state&#34;&gt;How do I know if I have package-level state?&lt;/h3&gt;
 
 &lt;p&gt;If you have a &lt;code&gt;var&lt;/code&gt; declaration in the &lt;a href=&#34;https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27&#34;&gt;top
 level&lt;/a&gt;
 of your package (i.e. outside of a function or method definition), then you have
-global state. This state is shared among all the code defined in
-your library.&lt;/p&gt;
+package-level state. This state is shared among all the code in your package.&lt;/p&gt;
 
 &lt;p&gt;Having package-level state prevents your user from doing cool things like:&lt;/p&gt;
 
@@ -160,16 +146,17 @@ time)&lt;/li&gt;
 more convenient for your users (i.e. so they can use your library out of the
 box, without any instantiation.) If you decide to take this route, please, for
 the love of Gophers, also provide a way to instantiate a single instance. Some
-good examples of this are the &lt;a href=&#34;https://golang.org/pkg/log/&#34;&gt;log&lt;/a&gt; and
-&lt;a href=&#34;https://golang.org/pkg/flag/&#34;&gt;flag&lt;/a&gt; packages from the standard library.&lt;/p&gt;
+good examples of this are the &lt;a href=&#34;https://golang.org/pkg/log/&#34;&gt;log.New&lt;/a&gt; and
+&lt;a href=&#34;https://golang.org/pkg/flag/&#34;&gt;flag.NewFlagSet&lt;/a&gt; methods from the standard
+library.&lt;/p&gt;
 
 &lt;h2 id=&#34;don-t-parse-configuration-in-your-library&#34;&gt;Don&amp;rsquo;t parse configuration in your library&lt;/h2&gt;
 
 &lt;p&gt;I&amp;rsquo;ve seen this done before and it is a recipe for trouble. When you inevitably
 have a misconfiguration issue, your user has one more place to track down where
 the config is being parsed. Let your user&amp;rsquo;s code be responsible for parsing
-configuration, and passing it down to your library. Maybe provide some helpers
-functions to do this.&lt;/p&gt;
+configuration, and passing it down to your library. If you really want to be
+provide some helpers functions to do this.&lt;/p&gt;
 
 &lt;h2 id=&#34;embed-your-dependencies&#34;&gt;Embed your dependencies&lt;/h2&gt;
 

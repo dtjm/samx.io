@@ -54,22 +54,8 @@
 			  <span class="post-date">Sun, Nov 6, 2016</span>
 			      
 
-<p>I am not a Go expert, but in the past few years I&rsquo;ve collected some ideas of
-what makes a Go library easy to use. Here are a few humble suggestions I have
-for you, the aspiring Go library designer, which you can use to bring joy and
-delight to your users.</p>
-
-<h2 id="keep-it-primitive">Keep it primitive</h2>
-
-<p>The more of your library&rsquo;s surface area is tightly coupled to your library, the
-more trouble your users will have if they want to make it cooperate with the
-other libraries in their toolbox.</p>
-
-<p>As a rule of thumb, your library should prefer to pass data to and from your
-user in terms of primitive data types, if it makes sense.</p>
-
-<p>If it doesn&rsquo;t make sense to do so, you may be tempted to create a struct to
-organize the data that goes between your code and your user&rsquo;s code.</p>
+<p>I am not a Go expert, but over the past few years I&rsquo;ve collected some ideas of
+what makes a Go library easy to use.</p>
 
 <h2 id="avoid-package-level-state">Avoid package-level state</h2>
 
@@ -77,13 +63,12 @@ organize the data that goes between your code and your user&rsquo;s code.</p>
 kind of state, and package-level state is a form of global state. If you must
 have state, keep it contained to as short a time period as possible.</p>
 
-<p><em>How do I know if I have global state in my library?</em></p>
+<h3 id="how-do-i-know-if-i-have-package-level-state">How do I know if I have package-level state?</h3>
 
 <p>If you have a <code>var</code> declaration in the <a href="https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27">top
 level</a>
 of your package (i.e. outside of a function or method definition), then you have
-global state. This state is shared among all the code defined in
-your library.</p>
+package-level state. This state is shared among all the code in your package.</p>
 
 <p>Having package-level state prevents your user from doing cool things like:</p>
 
@@ -97,16 +82,17 @@ time)</li>
 more convenient for your users (i.e. so they can use your library out of the
 box, without any instantiation.) If you decide to take this route, please, for
 the love of Gophers, also provide a way to instantiate a single instance. Some
-good examples of this are the <a href="https://golang.org/pkg/log/">log</a> and
-<a href="https://golang.org/pkg/flag/">flag</a> packages from the standard library.</p>
+good examples of this are the <a href="https://golang.org/pkg/log/">log.New</a> and
+<a href="https://golang.org/pkg/flag/">flag.NewFlagSet</a> methods from the standard
+library.</p>
 
 <h2 id="don-t-parse-configuration-in-your-library">Don&rsquo;t parse configuration in your library</h2>
 
 <p>I&rsquo;ve seen this done before and it is a recipe for trouble. When you inevitably
 have a misconfiguration issue, your user has one more place to track down where
 the config is being parsed. Let your user&rsquo;s code be responsible for parsing
-configuration, and passing it down to your library. Maybe provide some helpers
-functions to do this.</p>
+configuration, and passing it down to your library. If you really want to be
+provide some helpers functions to do this.</p>
 
 <h2 id="embed-your-dependencies">Embed your dependencies</h2>
 
