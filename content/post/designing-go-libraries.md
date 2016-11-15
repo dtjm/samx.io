@@ -6,22 +6,8 @@ date = "2016-11-06T21:51:21-08:00"
 title = "Designing libraries in Go"
 +++
 
-I am not a Go expert, but in the past few years I've collected some ideas of
-what makes a Go library easy to use. Here are a few humble suggestions I have
-for you, the aspiring Go library designer, which you can use to bring joy and
-delight to your users.
-
-## Keep it primitive
-
-The more of your library's surface area is tightly coupled to your library, the
-more trouble your users will have if they want to make it cooperate with the
-other libraries in their toolbox.
-
-As a rule of thumb, your library should prefer to pass data to and from your
-user in terms of primitive data types, if it makes sense.
-
-If it doesn't make sense to do so, you may be tempted to create a struct to
-organize the data that goes between your code and your user's code.
+I am not a Go expert, but over the past few years I've collected some ideas of
+what makes a Go library easy to use.
 
 ## Avoid package-level state
 
@@ -29,13 +15,12 @@ In general, maintaining state is a necessary **evil**. Global state is the worst
 kind of state, and package-level state is a form of global state. If you must
 have state, keep it contained to as short a time period as possible.
 
-*How do I know if I have global state in my library?*
+### How do I know if I have package-level state?
 
 If you have a `var` declaration in the [top
 level](https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27)
 of your package (i.e. outside of a function or method definition), then you have
-global state. This state is shared among all the code defined in
-your library.
+package-level state. This state is shared among all the code in your package.
 
 Having package-level state prevents your user from doing cool things like:
 
@@ -47,16 +32,17 @@ Sometimes you want to have a package level instance in your library, to make it
 more convenient for your users (i.e. so they can use your library out of the
 box, without any instantiation.) If you decide to take this route, please, for
 the love of Gophers, also provide a way to instantiate a single instance. Some
-good examples of this are the [log](https://golang.org/pkg/log/) and
-[flag](https://golang.org/pkg/flag/) packages from the standard library.
+good examples of this are the [log.New](https://golang.org/pkg/log/) and
+[flag.NewFlagSet](https://golang.org/pkg/flag/) methods from the standard
+library.
 
 ## Don't parse configuration in your library
 
 I've seen this done before and it is a recipe for trouble. When you inevitably
 have a misconfiguration issue, your user has one more place to track down where
 the config is being parsed. Let your user's code be responsible for parsing
-configuration, and passing it down to your library. Maybe provide some helpers
-functions to do this.
+configuration, and passing it down to your library. If you really want to be
+provide some helpers functions to do this.
 
 ## Embed your dependencies
 
