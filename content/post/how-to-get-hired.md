@@ -49,8 +49,9 @@ technology company nearby called SendGrid. It was hip, growing fast, and just a
 candidate for the position, I took time to think about what problems they might
 be facing, and came up with these two:
 
-A. Executing on their core business
-B. Hiring
+
+#### A. Executing on their core business
+#### B. Hiring
 
 A) If you can execute on a company’s core business, there’s always demand.
 Businesses make money when employees do their jobs. The trick is how you
