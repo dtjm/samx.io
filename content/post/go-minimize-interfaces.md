@@ -1,60 +1,10 @@
 +++
-Description = ""
 Tags = [ "golang" ]
 menu = "main"
-date = "2016-11-06T21:51:21-08:00"
-title = "Designing libraries in Go"
+date = "2016-12-16"
+title = "Designing Go libraries: Minimize interface surface area"
+draft = true
 +++
-
-I am not a Go expert, but over the past few years I've collected some ideas of
-what makes a Go library easy to use.
-
-## Avoid package-level state
-
-In general, maintaining state is a necessary **evil**. Global state is the worst
-kind of state, and package-level state is a form of global state. If you must
-have state, keep it contained to as short a time period as possible.
-
-### How do I know if I have package-level state?
-
-If you have a `var` declaration in the [top
-level](https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27)
-of your package (i.e. outside of a function or method definition), then you have
-package-level state. This state is shared among all the code in your package.
-
-Having package-level state prevents your user from doing cool things like:
-
-1. Reasoning about your library code (that is in the expected state at any given
-   time)
-2. Parallelizing tests
-
-Sometimes you want to have a package level instance in your library, to make it
-more convenient for your users (i.e. so they can use your library out of the
-box, without any instantiation.) If you decide to take this route, please, for
-the love of Gophers, also provide a way to instantiate a single instance. Some
-good examples of this are the [log.New](https://golang.org/pkg/log/) and
-[flag.NewFlagSet](https://golang.org/pkg/flag/) methods from the standard
-library.
-
-## Don't parse configuration in your library
-
-I've seen this done before and it is a recipe for trouble. When you inevitably
-have a misconfiguration issue, your user has one more place to track down where
-the config is being parsed. Let your user's code be responsible for parsing
-configuration, and passing it down to your library. If you really want to be
-provide some helpers functions to do this.
-
-## Embed your dependencies
-
-There's nothing more annoying in Go than **package management**.  Don't make your
-users do extra and unnecessary package management.  Your library should come as a
-single unit wrapped in a nice, neat bow.
-
-Copy-pasting your dependencies directly into your package adds a little more
-work to your plate, but makes working with your library slightly more
-delightful.  You could save a poor Go newbie from dependency hell.
-
-## Minimize interface surface area
 
 Sometimes you want to abstract away the implementation of a component in your
 library, for example a logger.  
@@ -121,9 +71,9 @@ type Logger func (format string, v ...interface{})
 ```
 
 Exposing this behavior as a function instead of an interface makes it more
-generic, and thus broadly compatible. With interfaces, you have to match the method
-name, but with functions you only have to match the function signature, i.e. the
-parameter and return types.
+generic, and thus broadly compatible. With interfaces, you have to match the
+method name and signature, but with functions you only have to match the
+signature, i.e. the parameters and return types.
 
 This, combined with Go's concept of [method
 values](https://golang.org/doc/go1.1#method_values) gives us the ability to use

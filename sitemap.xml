@@ -3,17 +3,17 @@
   
   <url>
     <loc>https://dtjm.github.io/</loc>
-    <lastmod>2016-11-12T21:01:29-08:00</lastmod>
+    <lastmod>2016-11-06T21:51:21-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://dtjm.github.io/post/go-avoid-package-level-state/</loc>
+    <lastmod>2016-11-06T21:51:21-08:00</lastmod>
   </url>
   
   <url>
     <loc>https://dtjm.github.io/post/how-to-get-hired/</loc>
-    <lastmod>2016-11-12T21:01:29-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://dtjm.github.io/post/designing-go-libraries/</loc>
-    <lastmod>2016-11-06T21:51:21-08:00</lastmod>
+    <lastmod>2014-02-10T00:00:00+00:00</lastmod>
   </url>
   
 </urlset>

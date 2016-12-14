@@ -1,0 +1,115 @@
+	<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.17" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+  <title>Designing Go libraries: Avoid package-level state &middot; Sam X.</title>
+  
+
+  
+  <link rel="stylesheet" href="https://dtjm.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://dtjm.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://dtjm.github.io/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Sam X." />
+</head>
+
+	<body class="theme-base-0d ">
+		<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dtjm.github.io/"><h1>Sam X.</h1></a>
+      <p class="lead">
+       Software engineer at SendGrid writes about Go programming and more. 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+        <li><a href="/post/go-avoid-package-level-state/"> Designing Go libraries: Avoid package-level state </a></li>
+      
+    </ul>
+
+    <p>&copy; 2016. All rights reserved. </p>
+  </div>
+</div>
+
+
+		<div class="content container">
+			<div class="post">
+			 	<h1>Designing Go libraries: Avoid package-level state</h1>
+			  <span class="post-date">Sun, Nov 6, 2016</span>
+			      
+
+<p>Maintaining state in software programs sucks, but it is often a necessary
+<strong>evil</strong>.</p>
+
+<p><em>Global</em> state is terrible.</p>
+
+<p>But global state that is <em>mutable</em> (read/write) is THE WORST kind of state.</p>
+
+<p>In Go programs, package-level state is a form of global state. If you must have
+state, keep it contained to as small a portion of time and space as possible.</p>
+
+<h2 id="how-do-i-know-if-i-have-package-level-state">How do I know if I have package-level state?</h2>
+
+<p>If you have a <code>var</code> declaration in the <a href="https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27">top
+level</a>
+of your package (i.e. outside of a function or method definition), then you have
+package-level state. This state is shared among all the code in your package.</p>
+
+<p>If you have a <code>const</code> declaration, you are in good shape because this is
+<em>immutable</em>, not mutable state (i.e. the value cannot be modified).</p>
+
+<p>Having package-level state prevents your user from doing cool things like:</p>
+
+<ol>
+<li>Reasoning about your library code (that is in the expected state at any given
+time)</li>
+<li>Parallelizing tests</li>
+</ol>
+
+<p>Sometimes you want to have a package level instance in your library, to make it
+more convenient for your users (i.e. so they can use your library out of the
+box, without any instantiation.) If you decide to take this route, please — for
+the love of Gophers — provide a way to instantiate a single instance. Some
+good examples of this are the <a href="https://golang.org/pkg/log/">log.New</a> and
+<a href="https://golang.org/pkg/flag/">flag.NewFlagSet</a> methods from the standard
+library.</p>
+
+			</div>
+
+			
+				<h2>Comments</h2>
+				<div id="disqus_thread"></div>
+<script type="text/javascript">
+     
+    var disqus_shortname = 'samx-io'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+			
+		</div>
+
+  </body>
+</html>

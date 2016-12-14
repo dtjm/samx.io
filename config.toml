@@ -8,4 +8,5 @@ PygmentsStyle = "monokai"
 
 [params]
 description = "Software engineer at SendGrid writes about Go programming and more."
+disqusShortname = "samx-io"
 themeColor = "theme-base-0d"

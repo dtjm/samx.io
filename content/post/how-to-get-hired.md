@@ -2,10 +2,13 @@
 Tags = [
   "interviews"
 ]
-date = "2016-11-12T21:01:29-08:00"
+date = "2014-02-10"
 title = "How to get hired"
 
 +++
+
+*Originally posted on the [SendGrid
+Blog](https://sendgrid.com/blog/im-great-technical-interviews-got-hired/)*
 
 I’m not great at on-the-spot thinking, so I’m handicapped off-the-bat in
 technical interviews — especially when I have to code on a white board. I’m at
