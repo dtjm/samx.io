@@ -11,10 +11,10 @@
     
     <item>
       <title>Designing Go libraries: Avoid package-level state</title>
-      <link>https://dtjm.github.io/post/go-avoid-package-level-state/</link>
+      <link>https://dtjm.github.io/post/golang-avoid-package-level-state/</link>
       <pubDate>Sun, 06 Nov 2016 21:51:21 -0800</pubDate>
       
-      <guid>https://dtjm.github.io/post/go-avoid-package-level-state/</guid>
+      <guid>https://dtjm.github.io/post/golang-avoid-package-level-state/</guid>
       <description>
 
 &lt;p&gt;Maintaining state in software programs sucks, but it is often a necessary
