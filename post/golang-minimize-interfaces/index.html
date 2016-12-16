@@ -1,0 +1,185 @@
+	<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.17" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+  <title>Designing Go libraries: Minimize interface surface area &middot; Sam X.</title>
+  
+
+  
+  <link rel="stylesheet" href="https://dtjm.github.io/css/poole.css">
+  <link rel="stylesheet" href="https://dtjm.github.io/css/syntax.css">
+  <link rel="stylesheet" href="https://dtjm.github.io/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Sam X." />
+</head>
+
+	<body class="theme-base-0d ">
+		<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dtjm.github.io/"><h1>Sam X.</h1></a>
+      <p class="lead">
+       Software engineer at SendGrid writes about Go programming and more. 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+
+      <hr/>
+      
+        <li><a href="/post/golang-minimize-interfaces/"> Designing Go libraries: Minimize interface surface area </a></li>
+      
+    </ul>
+
+    <p>&copy; 2016. All rights reserved. </p>
+  </div>
+</div>
+
+
+		<div class="content container">
+			<div class="post">
+			 	<h1>Designing Go libraries: Minimize interface surface area</h1>
+			  <span class="post-date">Fri, Dec 16, 2016</span>
+			      
+
+<blockquote>
+<p>When in doubt, leave it out<br />
+<em>Jasmin Blanchette, The Little Manual of API Design</em></p>
+</blockquote>
+
+<p>Sometimes you want to abstract away the implementation of a component in your
+library, for example a logger.  The typical approach for this is defining an
+interface that clients would then pass in.</p>
+
+<p>So you think to yourself, &ldquo;I&rsquo;m such a nice person, I&rsquo;m going to let my user pass
+in any logger of their choosing&rdquo;.  Let them give me any <code>Logger</code> they want:</p>
+
+<pre><code>type Logger interface {
+	Print(v ...interface{})
+	Printf(format string, args ...interface{})
+	Println(v ...interface{})
+}
+</code></pre>
+
+<p>Stop right there. What you&rsquo;re doing there is <strong>lazy</strong>. You&rsquo;ve destined your user
+to do one of two things: 1) use the standard library
+<a href="https://golang.org/pkg/log/">log</a> package, or 2) write an adapter which has 3
+methods. That is not something a nice person would do.</p>
+
+<h2 id="deduplicate-functionality">Deduplicate functionality</h2>
+
+<p>The astute reader may notice that some of these methods can be expressed in
+terms of the others. In other words, why require <code>Println</code> when you already have
+<code>Printf</code>? One can be expressed in terms of the other — for example:</p>
+
+<pre><code>func Println(s string) {
+	Printf(&quot;%s\n&quot;, s)
+}
+</code></pre>
+
+<p>This gives us the opportunity to minimize the interface we require. Let&rsquo;s try
+this:</p>
+
+<pre><code>type Logger interface {
+	Printf(format string, args ...interface{})
+}
+</code></pre>
+
+<p>That&rsquo;s a little better, right?</p>
+
+<p>Now, let&rsquo;s say we wanted to plug in the
+<a href="https://golang.org/pkg/testing/#T.Logf">(*testing.T).Logf</a> method into the
+<code>Logger</code> interface. We might create a wrapper like this:</p>
+
+<pre><code>type testLogger struct {
+	*testing.T
+}
+
+func (t *testLogger) Printf(format string, v ...interface{}) {
+	t.T.Logf(format, v...)
+}
+</code></pre>
+
+<p>If we made our library&rsquo;s logger interface even more abstract, we might be able
+to get away with even less code.</p>
+
+<h2 id="replace-the-interface-with-a-function">Replace the interface with a function</h2>
+
+<p>What&rsquo;s more abstract than an interface? How about a function?</p>
+
+<pre><code>type Logger func (format string, v ...interface{})
+</code></pre>
+
+<p>Exposing this behavior as a function instead of an interface makes it more
+generic, and thus broadly compatible. With interfaces, you have to match the
+method name and signature, but with functions you only have to match the
+signature, i.e. the parameters and return types.</p>
+
+<p><em>Disclaimer: This only works if your interface has only one method.</em></p>
+
+<p>This, combined with Go&rsquo;s concept of <a href="https://golang.org/doc/go1.1#method_values">method
+values</a> gives us the ability to use
+different loggers easily:</p>
+
+<pre><code>type Logger func (format string, v ...interface{})
+
+var log Logger
+var t *testing.T
+
+// All of these loggers can be used
+log = log.Printf
+log = t.Logf
+log = logrus.Debugf
+log = glog.Infof
+log = seelog.Debugf
+
+log(&quot;I got an error: %s&quot;, err)
+</code></pre>
+
+<h2 id="acknowledgments">Acknowledgments</h2>
+
+<p>Credit goes to these libraries for inspiring me:</p>
+
+<ul>
+<li><a href="https://github.com/Shopify/sarama/blob/482c471fbf73dc2ac66945187f811581f008c24a/sarama.go#L61-L65">Shopify/sarama</a></li>
+<li><a href="https://github.com/grpc/grpc-go/blob/e59af7a0a8bf571556b40c3f871dbc4298f77693/grpclog/logger.go#L50-L57">google.golang.org/grpc</a></li>
+<li><a href="https://sourcegraph.com/github.com/facebookgo/clock@HEAD/-/blob/clock.go#L15-24">facebookgo/clock</a></li>
+</ul>
+
+			</div>
+
+			
+				<h2>Comments</h2>
+				<div id="disqus_thread"></div>
+<script type="text/javascript">
+     
+    var disqus_shortname = 'samx-io'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+			
+		</div>
+
+  </body>
+</html>

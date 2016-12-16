@@ -3,7 +3,7 @@ Tags = [ "golang" ]
 menu = "main"
 date = "2016-11-06T21:51:21-08:00"
 title = "Designing Go libraries: Avoid package-level state"
-draft = false
+draft = true
 +++
 
 Maintaining state in software programs sucks, but it is often a necessary

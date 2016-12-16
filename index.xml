@@ -6,52 +6,120 @@
     <description>Recent content on Sam X.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Nov 2016 21:51:21 -0800</lastBuildDate>
+    <lastBuildDate>Fri, 16 Dec 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://dtjm.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Designing Go libraries: Avoid package-level state</title>
-      <link>https://dtjm.github.io/post/golang-avoid-package-level-state/</link>
-      <pubDate>Sun, 06 Nov 2016 21:51:21 -0800</pubDate>
+      <title>Designing Go libraries: Minimize interface surface area</title>
+      <link>https://dtjm.github.io/post/golang-minimize-interfaces/</link>
+      <pubDate>Fri, 16 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://dtjm.github.io/post/golang-avoid-package-level-state/</guid>
+      <guid>https://dtjm.github.io/post/golang-minimize-interfaces/</guid>
       <description>
 
-&lt;p&gt;Maintaining state in software programs sucks, but it is often a necessary
-&lt;strong&gt;evil&lt;/strong&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When in doubt, leave it out&lt;br /&gt;
+&lt;em&gt;Jasmin Blanchette, The Little Manual of API Design&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;&lt;em&gt;Global&lt;/em&gt; state is terrible.&lt;/p&gt;
+&lt;p&gt;Sometimes you want to abstract away the implementation of a component in your
+library, for example a logger.  The typical approach for this is defining an
+interface that clients would then pass in.&lt;/p&gt;
 
-&lt;p&gt;But global state that is &lt;em&gt;mutable&lt;/em&gt; (read/write) is THE WORST kind of state.&lt;/p&gt;
+&lt;p&gt;So you think to yourself, &amp;ldquo;I&amp;rsquo;m such a nice person, I&amp;rsquo;m going to let my user pass
+in any logger of their choosing&amp;rdquo;.  Let them give me any &lt;code&gt;Logger&lt;/code&gt; they want:&lt;/p&gt;
 
-&lt;p&gt;In Go programs, package-level state is a form of global state. If you must have
-state, keep it contained to as small a portion of time and space as possible.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type Logger interface {
+	Print(v ...interface{})
+	Printf(format string, args ...interface{})
+	Println(v ...interface{})
+}
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;how-do-i-know-if-i-have-package-level-state&#34;&gt;How do I know if I have package-level state?&lt;/h2&gt;
+&lt;p&gt;Stop right there. What you&amp;rsquo;re doing there is &lt;strong&gt;lazy&lt;/strong&gt;. You&amp;rsquo;ve destined your user
+to do one of two things: 1) use the standard library
+&lt;a href=&#34;https://golang.org/pkg/log/&#34;&gt;log&lt;/a&gt; package, or 2) write an adapter which has 3
+methods. That is not something a nice person would do.&lt;/p&gt;
 
-&lt;p&gt;If you have a &lt;code&gt;var&lt;/code&gt; declaration in the &lt;a href=&#34;https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27&#34;&gt;top
-level&lt;/a&gt;
-of your package (i.e. outside of a function or method definition), then you have
-package-level state. This state is shared among all the code in your package.&lt;/p&gt;
+&lt;h2 id=&#34;deduplicate-functionality&#34;&gt;Deduplicate functionality&lt;/h2&gt;
 
-&lt;p&gt;If you have a &lt;code&gt;const&lt;/code&gt; declaration, you are in good shape because this is
-&lt;em&gt;immutable&lt;/em&gt;, not mutable state (i.e. the value cannot be modified).&lt;/p&gt;
+&lt;p&gt;The astute reader may notice that some of these methods can be expressed in
+terms of the others. In other words, why require &lt;code&gt;Println&lt;/code&gt; when you already have
+&lt;code&gt;Printf&lt;/code&gt;? One can be expressed in terms of the other — for example:&lt;/p&gt;
 
-&lt;p&gt;Having package-level state prevents your user from doing cool things like:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;func Println(s string) {
+	Printf(&amp;quot;%s\n&amp;quot;, s)
+}
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;ol&gt;
-&lt;li&gt;Reasoning about your library code (that is in the expected state at any given
-time)&lt;/li&gt;
-&lt;li&gt;Parallelizing tests&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;This gives us the opportunity to minimize the interface we require. Let&amp;rsquo;s try
+this:&lt;/p&gt;
 
-&lt;p&gt;Sometimes you want to have a package level instance in your library, to make it
-more convenient for your users (i.e. so they can use your library out of the
-box, without any instantiation.) If you decide to take this route, please — for
-the love of Gophers — provide a way to instantiate a single instance. Some
-good examples of this are the &lt;a href=&#34;https://golang.org/pkg/log/&#34;&gt;log.New&lt;/a&gt; and
-&lt;a href=&#34;https://golang.org/pkg/flag/&#34;&gt;flag.NewFlagSet&lt;/a&gt; methods from the standard
-library.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type Logger interface {
+	Printf(format string, args ...interface{})
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s a little better, right?&lt;/p&gt;
+
+&lt;p&gt;Now, let&amp;rsquo;s say we wanted to plug in the
+&lt;a href=&#34;https://golang.org/pkg/testing/#T.Logf&#34;&gt;(*testing.T).Logf&lt;/a&gt; method into the
+&lt;code&gt;Logger&lt;/code&gt; interface. We might create a wrapper like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type testLogger struct {
+	*testing.T
+}
+
+func (t *testLogger) Printf(format string, v ...interface{}) {
+	t.T.Logf(format, v...)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we made our library&amp;rsquo;s logger interface even more abstract, we might be able
+to get away with even less code.&lt;/p&gt;
+
+&lt;h2 id=&#34;replace-the-interface-with-a-function&#34;&gt;Replace the interface with a function&lt;/h2&gt;
+
+&lt;p&gt;What&amp;rsquo;s more abstract than an interface? How about a function?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Logger func (format string, v ...interface{})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Exposing this behavior as a function instead of an interface makes it more
+generic, and thus broadly compatible. With interfaces, you have to match the
+method name and signature, but with functions you only have to match the
+signature, i.e. the parameters and return types.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Disclaimer: This only works if your interface has only one method.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This, combined with Go&amp;rsquo;s concept of &lt;a href=&#34;https://golang.org/doc/go1.1#method_values&#34;&gt;method
+values&lt;/a&gt; gives us the ability to use
+different loggers easily:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Logger func (format string, v ...interface{})
+
+var log Logger
+var t *testing.T
+
+// All of these loggers can be used
+log = log.Printf
+log = t.Logf
+log = logrus.Debugf
+log = glog.Infof
+log = seelog.Debugf
+
+log(&amp;quot;I got an error: %s&amp;quot;, err)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;acknowledgments&#34;&gt;Acknowledgments&lt;/h2&gt;
+
+&lt;p&gt;Credit goes to these libraries for inspiring me:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Shopify/sarama/blob/482c471fbf73dc2ac66945187f811581f008c24a/sarama.go#L61-L65&#34;&gt;Shopify/sarama&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/blob/e59af7a0a8bf571556b40c3f871dbc4298f77693/grpclog/logger.go#L50-L57&#34;&gt;google.golang.org/grpc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sourcegraph.com/github.com/facebookgo/clock@HEAD/-/blob/clock.go#L15-24&#34;&gt;facebookgo/clock&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     

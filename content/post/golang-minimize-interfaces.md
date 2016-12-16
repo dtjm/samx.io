@@ -3,11 +3,15 @@ Tags = [ "golang" ]
 menu = "main"
 date = "2016-12-16"
 title = "Designing Go libraries: Minimize interface surface area"
-draft = true
+draft = false
 +++
 
+> When in doubt, leave it out  
+> *Jasmin Blanchette, The Little Manual of API Design*
+
 Sometimes you want to abstract away the implementation of a component in your
-library, for example a logger.  
+library, for example a logger.  The typical approach for this is defining an
+interface that clients would then pass in.
 
 So you think to yourself, "I'm such a nice person, I'm going to let my user pass
 in any logger of their choosing".  Let them give me any `Logger` they want:
@@ -24,6 +28,8 @@ Stop right there. What you're doing there is **lazy**. You've destined your user
 to do one of two things: 1) use the standard library
 [log](https://golang.org/pkg/log/) package, or 2) write an adapter which has 3
 methods. That is not something a nice person would do.
+
+## Deduplicate functionality
 
 The astute reader may notice that some of these methods can be expressed in
 terms of the others. In other words, why require `Println` when you already have
@@ -61,8 +67,10 @@ func (t *testLogger) Printf(format string, v ...interface{}) {
 }
 ```
 
-But if we made our library's logger interface even more abstract, we could get
-away with even less code.
+If we made our library's logger interface even more abstract, we might be able
+to get away with even less code.
+
+## Replace the interface with a function
 
 What's more abstract than an interface? How about a function?
 
@@ -74,6 +82,8 @@ Exposing this behavior as a function instead of an interface makes it more
 generic, and thus broadly compatible. With interfaces, you have to match the
 method name and signature, but with functions you only have to match the
 signature, i.e. the parameters and return types.
+
+*Disclaimer: This only works if your interface has only one method.*
 
 This, combined with Go's concept of [method
 values](https://golang.org/doc/go1.1#method_values) gives us the ability to use
@@ -101,4 +111,4 @@ Credit goes to these libraries for inspiring me:
 
 - [Shopify/sarama](https://github.com/Shopify/sarama/blob/482c471fbf73dc2ac66945187f811581f008c24a/sarama.go#L61-L65)
 - [google.golang.org/grpc](https://github.com/grpc/grpc-go/blob/e59af7a0a8bf571556b40c3f871dbc4298f77693/grpclog/logger.go#L50-L57)
-- [afex/hystrix-go](https://github.com/afex/hystrix-go/blob/39520ddd07a9d9a071d615f7476798659f5a3b89/hystrix/circuit.go#L24-L27)
+- [facebookgo/clock](https://sourcegraph.com/github.com/facebookgo/clock@HEAD/-/blob/clock.go#L15-24)
