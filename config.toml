@@ -1,4 +1,4 @@
-baseurl = "https://dtjm.github.io/"
+baseurl = "http://samx.io/"
 languageCode = "en-us"
 theme = "hyde"
 title = "Sam X."

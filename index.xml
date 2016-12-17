@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Sam X.</title>
-    <link>https://dtjm.github.io/index.xml</link>
+    <link>http://samx.io/index.xml</link>
     <description>Recent content on Sam X.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 16 Dec 2016 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://dtjm.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://samx.io/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Designing Go libraries: Minimize interface surface area</title>
-      <link>https://dtjm.github.io/post/golang-minimize-interfaces/</link>
+      <link>http://samx.io/post/golang-minimize-interfaces/</link>
       <pubDate>Fri, 16 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://dtjm.github.io/post/golang-minimize-interfaces/</guid>
+      <guid>http://samx.io/post/golang-minimize-interfaces/</guid>
       <description>
 
 &lt;blockquote&gt;
@@ -125,10 +125,10 @@ log(&amp;quot;I got an error: %s&amp;quot;, err)
     
     <item>
       <title>How to get hired</title>
-      <link>https://dtjm.github.io/post/how-to-get-hired/</link>
+      <link>http://samx.io/post/how-to-get-hired/</link>
       <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://dtjm.github.io/post/how-to-get-hired/</guid>
+      <guid>http://samx.io/post/how-to-get-hired/</guid>
       <description>
 
 &lt;p&gt;&lt;em&gt;Originally posted on the &lt;a href=&#34;https://sendgrid.com/blog/im-great-technical-interviews-got-hired/&#34;&gt;SendGrid
