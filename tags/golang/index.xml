@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on Sam X.</title>
+    <link>http://samx.io/tags/golang/</link>
+    <description>Recent content in Golang on Sam X.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 16 Dec 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://samx.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Designing Go libraries: Minimize interface surface area</title>
+      <link>http://samx.io/post/golang-minimize-interfaces/</link>
+      <pubDate>Fri, 16 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/post/golang-minimize-interfaces/</guid>
+      <description>When in doubt, leave it out
+Jasmin Blanchette, The Little Manual of API Design
+ Sometimes you want to abstract away the implementation of a component in your library, for example a logger. The typical approach for this is defining an interface that clients would then pass in.
+So you think to yourself, &amp;ldquo;I&amp;rsquo;m such a nice person, I&amp;rsquo;m going to let my user pass in any logger of their choosing&amp;rdquo;.</description>
+    </item>
+    
+  </channel>
+</rss>

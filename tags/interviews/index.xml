@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Interviews on Sam X.</title>
+    <link>http://samx.io/tags/interviews/</link>
+    <description>Recent content in Interviews on Sam X.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Feb 2014 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://samx.io/tags/interviews/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to get hired</title>
+      <link>http://samx.io/post/how-to-get-hired/</link>
+      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/post/how-to-get-hired/</guid>
+      <description>Originally posted on the SendGrid Blog
+I’m not great at on-the-spot thinking, so I’m handicapped off-the-bat in technical interviews — especially when I have to code on a white board. I’m at my best when I have time to prepare in advance. Last year I discovered a method which played to my strengths and landed me a job that I love.
+Discovering the Briefcase Technique In 2012, I took a course on how to start a business called “Earn One Thousand Dollars On The Side” by Ramit Sethi, a business consultant.</description>
+    </item>
+    
+  </channel>
+</rss>
