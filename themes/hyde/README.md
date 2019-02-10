@@ -1,6 +1,6 @@
 # Hyde
 
-Hyde is a brazen two-column [hugo](http://hugo.spf13.com) theme based on the [Jekyll](http://jekyllrb.com) theme of the same name.
+Hyde is a brazen two-column [hugo](https://gohugo.io) theme based on the [Jekyll](http://jekyllrb.com) theme of the same name.
 It pairs a prominent sidebar with uncomplicated content.
 
 ![Hyde screenshot](https://f.cloud.github.com/assets/98681/1831228/42af6c6a-7384-11e3-98fb-e0b923ee0468.png)
@@ -15,12 +15,23 @@ It pairs a prominent sidebar with uncomplicated content.
   - [Themes](#themes)
   - [Reverse layout](#reverse-layout)
   - [Disqus](#disqus)
+  - [Google Analytics](#google-analytics)
 - [Author](#author)
 - [Ported by](#ported-by)
 - [License](#license)
 
 
 ## Installation
+
+### Quick Start
+
+To give you a running start this installation puts a fully configured [starter repo](https://github.com/forestryio/hyde-hugo-starter) into your Git account and sets it up in a content manager / CMS. 
+
+_[Forestry](https://forestry.io) Starter-Kit:_
+
+[![Import this project into Forestry](https://assets.forestry.io/import-to-forestry.svg)](https://app.forestry.io/quick-start?repo=forestryio/hyde-hugo-starter&provider=github&engine=hugo&version=0.49)
+
+### Standard Installation
 
 To install Hyde as your default theme, first install this repository in the `themes/` directory:
 
@@ -119,18 +130,33 @@ params:
 
 ### Disqus
 
-You can optionally enable a comment system powered by Disqus for the posts. Simply add the variable `disqusShortname` to the `params` in your config file.
+You can optionally enable a comment system powered by Disqus for the posts. Simply add the variable `disqusShortname` to your config file.
 
 **TOML**
 ```toml
-[params]
-  disqusShortname = "spf13"
+disqusShortname = "spf13"
 ```
 
 **YAML**
 ```yaml
-params:
-  disqusShortname: "spf13"
+disqusShortname : spf13
+```
+
+> **Note:** Previous version 1.0 the Disqus shortname had to be defined inside the `[params]` block.
+
+
+## Google Analytics
+
+Google Analytics can be enabled by assigning your tracking code to the `googleAnalytics` variable in the config file:
+
+**TOML**
+```toml
+googleAnalytics = "Your tracking code"
+```
+
+**YAML**
+```yaml
+googleAnalytics: Your tracking code
 ```
 
 ## Author

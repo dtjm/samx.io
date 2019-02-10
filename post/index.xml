@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Post-rsses on Sam X.</title>
-    <link>http://samx.io/post/index.xml</link>
-    <description>Recent content in Post-rsses on Sam X.</description>
+    <title>Posts on Sam X.</title>
+    <link>http://samx.io/post/</link>
+    <description>Recent content in Posts on Sam X.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Dec 2016 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://samx.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 09 Feb 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://samx.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Daddy, what do you do at work?</title>
+      <link>http://samx.io/post/daddy-what-do-you-do-at-work/</link>
+      <pubDate>Sat, 09 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/post/daddy-what-do-you-do-at-work/</guid>
+      <description>Talking with Boy #1 about his day before bedtime.
+They had 2 dentists come into class that day so he was really curious about what I do at work&amp;hellip;
+Boy 1: Daddy, what do you do at work? Do you do math? Me: Yeah, math and computer programming Boy 1: How about English? Me: I have to write a lot, like emails and documentation and chats, so I guess you could say I do English too Boy 1: Like, you write sentences?</description>
+    </item>
     
     <item>
       <title>Designing Go libraries: Minimize interface surface area</title>
@@ -15,112 +28,10 @@
       <pubDate>Fri, 16 Dec 2016 00:00:00 +0000</pubDate>
       
       <guid>http://samx.io/post/golang-minimize-interfaces/</guid>
-      <description>
-
-&lt;blockquote&gt;
-&lt;p&gt;When in doubt, leave it out&lt;br /&gt;
-&lt;em&gt;Jasmin Blanchette, The Little Manual of API Design&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Sometimes you want to abstract away the implementation of a component in your
-library, for example a logger.  The typical approach for this is defining an
-interface that clients would then pass in.&lt;/p&gt;
-
-&lt;p&gt;So you think to yourself, &amp;ldquo;I&amp;rsquo;m such a nice person, I&amp;rsquo;m going to let my user pass
-in any logger of their choosing&amp;rdquo;.  Let them give me any &lt;code&gt;Logger&lt;/code&gt; they want:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Logger interface {
-	Print(v ...interface{})
-	Printf(format string, args ...interface{})
-	Println(v ...interface{})
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Stop right there. What you&amp;rsquo;re doing there is &lt;strong&gt;lazy&lt;/strong&gt;. You&amp;rsquo;ve destined your user
-to do one of two things: 1) use the standard library
-&lt;a href=&#34;https://golang.org/pkg/log/&#34;&gt;log&lt;/a&gt; package, or 2) write an adapter which has 3
-methods. That is not something a nice person would do.&lt;/p&gt;
-
-&lt;h2 id=&#34;deduplicate-functionality&#34;&gt;Deduplicate functionality&lt;/h2&gt;
-
-&lt;p&gt;The astute reader may notice that some of these methods can be expressed in
-terms of the others. In other words, why require &lt;code&gt;Println&lt;/code&gt; when you already have
-&lt;code&gt;Printf&lt;/code&gt;? One can be expressed in terms of the other — for example:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func Println(s string) {
-	Printf(&amp;quot;%s\n&amp;quot;, s)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This gives us the opportunity to minimize the interface we require. Let&amp;rsquo;s try
-this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Logger interface {
-	Printf(format string, args ...interface{})
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;That&amp;rsquo;s a little better, right?&lt;/p&gt;
-
-&lt;p&gt;Now, let&amp;rsquo;s say we wanted to plug in the
-&lt;a href=&#34;https://golang.org/pkg/testing/#T.Logf&#34;&gt;(*testing.T).Logf&lt;/a&gt; method into the
-&lt;code&gt;Logger&lt;/code&gt; interface. We might create a wrapper like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type testLogger struct {
-	*testing.T
-}
-
-func (t *testLogger) Printf(format string, v ...interface{}) {
-	t.T.Logf(format, v...)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If we made our library&amp;rsquo;s logger interface even more abstract, we might be able
-to get away with even less code.&lt;/p&gt;
-
-&lt;h2 id=&#34;replace-the-interface-with-a-function&#34;&gt;Replace the interface with a function&lt;/h2&gt;
-
-&lt;p&gt;What&amp;rsquo;s more abstract than an interface? How about a function?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Logger func (format string, v ...interface{})
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Exposing this behavior as a function instead of an interface makes it more
-generic, and thus broadly compatible. With interfaces, you have to match the
-method name and signature, but with functions you only have to match the
-signature, i.e. the parameters and return types.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Disclaimer: This only works if your interface has only one method.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;This, combined with Go&amp;rsquo;s concept of &lt;a href=&#34;https://golang.org/doc/go1.1#method_values&#34;&gt;method
-values&lt;/a&gt; gives us the ability to use
-different loggers easily:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Logger func (format string, v ...interface{})
-
-var log Logger
-var t *testing.T
-
-// All of these loggers can be used
-log = log.Printf
-log = t.Logf
-log = logrus.Debugf
-log = glog.Infof
-log = seelog.Debugf
-
-log(&amp;quot;I got an error: %s&amp;quot;, err)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;acknowledgments&#34;&gt;Acknowledgments&lt;/h2&gt;
-
-&lt;p&gt;Credit goes to these libraries for inspiring me:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/Shopify/sarama/blob/482c471fbf73dc2ac66945187f811581f008c24a/sarama.go#L61-L65&#34;&gt;Shopify/sarama&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/grpc/grpc-go/blob/e59af7a0a8bf571556b40c3f871dbc4298f77693/grpclog/logger.go#L50-L57&#34;&gt;google.golang.org/grpc&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://sourcegraph.com/github.com/facebookgo/clock@HEAD/-/blob/clock.go#L15-24&#34;&gt;facebookgo/clock&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
+      <description>When in doubt, leave it out
+Jasmin Blanchette, The Little Manual of API Design
+ Sometimes you want to abstract away the implementation of a component in your library, for example a logger. The typical approach for this is defining an interface that clients would then pass in.
+So you think to yourself, &amp;ldquo;I&amp;rsquo;m such a nice person, I&amp;rsquo;m going to let my user pass in any logger of their choosing&amp;rdquo;.</description>
     </item>
     
     <item>
@@ -129,103 +40,9 @@ log(&amp;quot;I got an error: %s&amp;quot;, err)
       <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
       <guid>http://samx.io/post/how-to-get-hired/</guid>
-      <description>
-
-&lt;p&gt;&lt;em&gt;Originally posted on the &lt;a href=&#34;https://sendgrid.com/blog/im-great-technical-interviews-got-hired/&#34;&gt;SendGrid
-Blog&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;I’m not great at on-the-spot thinking, so I’m handicapped off-the-bat in
-technical interviews — especially when I have to code on a white board. I’m at
-my best when I have time to prepare in advance. Last year I discovered a method
-which played to my strengths and landed me a job that I love.&lt;/p&gt;
-
-&lt;h2 id=&#34;discovering-the-briefcase-technique&#34;&gt;Discovering the Briefcase Technique&lt;/h2&gt;
-
-&lt;p&gt;In 2012, I took a course on how to start a business called “Earn One Thousand
-Dollars On The Side” by Ramit Sethi, a business consultant. His headlines come
-off really scammy, but it turns out he gives very practical advice grounded in
-research.&lt;/p&gt;
-
-&lt;p&gt;One of the negotiation methods he teaches is “The Briefcase Technique,” in which
-you prepare a hard-copy document describing the value you would provide to the
-prospective employer. At the point in the meeting when you might discuss
-compensation, you pull out this document from your briefcase and impress them
-with your preparedness. In doing so, you take the conversation to the point
-where “price is just a technicality” — you have already convinced them you can
-solve their problems.&lt;/p&gt;
-
-&lt;p&gt;If you take this tactic and really boil it down, I think part of what he’s
-saying is:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Seek to serve, not to be served.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Many job-seekers pursue leads with the self-centered notion of “I need a job”.
-Me, me, me. Wah, wah, wah. To land yourself the job of your choice, stop
-thinking about what you want for a moment. Try starting with these questions:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;What are my customer’s problems?&lt;/li&gt;
-&lt;li&gt;How can I solve their problems?&lt;/li&gt;
-&lt;li&gt;How can I reduce risk for my customer?&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;While I was enrolled in Ramit’s course, I received a job lead for a small
-technology company nearby called SendGrid. It was hip, growing fast, and just a
-7-minute train ride away. I wanted to go to there. To make myself a prime
-candidate for the position, I took time to think about what problems they might
-be facing, and came up with these two:&lt;/p&gt;
-
-&lt;h4 id=&#34;a-executing-on-their-core-business&#34;&gt;A. Executing on their core business&lt;/h4&gt;
-
-&lt;h4 id=&#34;b-hiring&#34;&gt;B. Hiring&lt;/h4&gt;
-
-&lt;p&gt;A) If you can execute on a company’s core business, there’s always demand.
-Businesses make money when employees do their jobs. The trick is how you
-demonstrate that competency. If you want to work for an auto mechanic shop, then
-show them you can fix cars. If you are gunning for a software development job,
-write software that is relevant to the company’s business.&lt;/p&gt;
-
-&lt;p&gt;B) Companies are constantly on the hunt for top talent. Unfortunately, most
-don’t have a reliable, reproducible way of attracting the people they need.
-Every interview candidate walks through the door with a big question mark over
-their head. Will this person produce more value than they consume? That is the
-risk of the hiring process. You can reduce that risk by clearly communicating
-how you would add value to the company.&lt;/p&gt;
-
-&lt;h2 id=&#34;demonstrate-competency-communicate-value&#34;&gt;Demonstrate competency, communicate value&lt;/h2&gt;
-
-&lt;p&gt;If you find a company you really want to work with, stop playing
-Guess-The-Obscure-Interview-Puzzle. Companies often play these games because
-there’s no sure-fire way to identify great candidates. Don’t pay attention to
-the generic interview prep material that the recruiter sent you. Spend time
-figuring out how you will solve their problems, and how you will communicate
-that to them.&lt;/p&gt;
-
-&lt;p&gt;My tactic when applying for SendGrid was to execute a Double-Briefcase maneuver.
-First, I sent in my “cover-letter”: a tiny web app incorporating some of the
-technologies that I imagined they would be using. I spent about 4 hours building
-this. The goal was to mitigate the risk of whether or not I could actually write
-code in a domain that was useful to them (it was a combination of frontend and
-backend web technologies).&lt;/p&gt;
-
-&lt;p&gt;For my on-site interview, I prepared a one-page document listing five different
-ways they could improve their services or utilize new technologies. I did this
-by spending an hour browsing their website and using their service. Then I wrote
-down five things I would do to improve their business based on what I saw and
-handed that to the vice president that interviewed me.&lt;/p&gt;
-
-&lt;p&gt;I ended up getting an offer from SendGrid. Then I did this with another company
-and got a competing offer.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;P.S. I now work at SendGrid in Orange, CA on a small team building distributed
-systems. We’re looking for a few good engineers.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;P.P.S. For more info on the Briefcase Technique, &lt;a href=&#34;http://www.iwillteachyoutoberich.com/the-briefcase-technique/&#34;&gt;check out Ramit’s
-site&lt;/a&gt;. Then, come
-practice it on us at SendGrid!&lt;/em&gt;&lt;/p&gt;
-</description>
+      <description>Originally posted on the SendGrid Blog
+I’m not great at on-the-spot thinking, so I’m handicapped off-the-bat in technical interviews — especially when I have to code on a white board. I’m at my best when I have time to prepare in advance. Last year I discovered a method which played to my strengths and landed me a job that I love.
+Discovering the Briefcase Technique In 2012, I took a course on how to start a business called “Earn One Thousand Dollars On The Side” by Ramit Sethi, a business consultant.</description>
     </item>
     
   </channel>

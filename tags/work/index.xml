@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Work on Sam X.</title>
+    <link>http://samx.io/tags/work/</link>
+    <description>Recent content in Work on Sam X.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 09 Feb 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://samx.io/tags/work/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Daddy, what do you do at work?</title>
+      <link>http://samx.io/post/daddy-what-do-you-do-at-work/</link>
+      <pubDate>Sat, 09 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/post/daddy-what-do-you-do-at-work/</guid>
+      <description>Talking with Boy #1 about his day before bedtime.
+They had 2 dentists come into class that day so he was really curious about what I do at work&amp;hellip;
+Boy 1: Daddy, what do you do at work? Do you do math? Me: Yeah, math and computer programming Boy 1: How about English? Me: I have to write a lot, like emails and documentation and chats, so I guess you could say I do English too Boy 1: Like, you write sentences?</description>
+    </item>
+    
+  </channel>
+</rss>

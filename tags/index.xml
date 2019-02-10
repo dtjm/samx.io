@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Sam X.</title>
+    <link>http://samx.io/tags/</link>
+    <description>Recent content in Tags on Sam X.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 16 Dec 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://samx.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Golang</title>
+      <link>http://samx.io/tags/golang/</link>
+      <pubDate>Fri, 16 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Interviews</title>
+      <link>http://samx.io/tags/interviews/</link>
+      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/tags/interviews/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kids</title>
+      <link>http://samx.io/tags/kids/</link>
+      <pubDate>Sat, 09 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/tags/kids/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Work</title>
+      <link>http://samx.io/tags/work/</link>
+      <pubDate>Sat, 09 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://samx.io/tags/work/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
